@@ -1,0 +1,22 @@
+import React from 'react'
+
+const HeroSection = () => {
+  return (
+    <div className="mt-[16rem] mb-[7rem] text-white relative p-6">
+  
+
+      {/* Main Content */}
+      <main className="flex  flex-col h-full   items-center justify-center max-w-4xl mx-auto text-center gap-6">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">Monetize Your Web3 Expertise</h1>
+        <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
+          Share tools, offer consultations, and build your personal brand with ease
+        </p>
+        <button className="mt-8 px-11 py-4 text-lg bg-[#d4ff8e] hover:bg-[#c1eb7b] text-black rounded-full transition-colors">
+          Learn More
+        </button>
+      </main>
+    </div>
+  )
+}
+
+export default HeroSection
