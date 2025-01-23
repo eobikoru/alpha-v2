@@ -53,8 +53,8 @@ function CreatorSection({ title }: { title: string }) {
 export default function Dashboard() {
   const navigationLinks = [
     { href: "/dashboard", label: "Dashboard", icon: <HomeOutlined className="w-5 h-5 text-white" /> },
-    { href: "/earnings", label: "Earnings", icon: <DollarCircleOutlined className="w-5 h-5 text-white" /> },
     { href: "/profile", label: "Profile", icon: <UserOutlined className="w-5 h-5 text-white" /> },
+    { href: "#", label: "Earnings", icon: <DollarCircleOutlined className="w-5 h-5 text-white" /> },
   ];
   
   return (
