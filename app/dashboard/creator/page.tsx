@@ -10,6 +10,7 @@ import { AddToolModal } from "@/src/components/modals/add-tool-modal"
 import { SetAvailabilityModal } from "@/src/components/modals/set-availability-modal"
 import { AppointmentDetailsModal } from "@/src/components/modals/appointment-details-modal"
 import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-modal"
+import { AllToolsModal } from "@/src/components/modals/all-tools-modal"
 
 interface Appointment {
   id: string
@@ -42,6 +43,7 @@ export default function CreatorDashboard() {
   const [isSetAvailabilityModalOpen, setIsSetAvailabilityModalOpen] = useState(false)
   const [isAllAppointmentsModalOpen, setIsAllAppointmentsModalOpen] = useState(false)
   const [isAppointmentDetailsModalOpen, setIsAppointmentDetailsModalOpen] = useState(false)
+  const [isAllToolsModalOpen, setIsAllToolsModalOpen] = useState(false)
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
   const navigationLinks = [
@@ -361,7 +363,11 @@ export default function CreatorDashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-white">Recent Tools</h2>
-                <Button type="link" className="text-lime-400 hover:text-lime-500 p-0">
+                <Button
+                  type="link"
+                  className="text-lime-400 hover:text-lime-500 p-0"
+                  onClick={() => setIsAllToolsModalOpen(true)}
+                >
                   View All Tools
                 </Button>
               </div>
@@ -389,6 +395,7 @@ export default function CreatorDashboard() {
           appointment={selectedAppointment}
         />
       )}
+      <AllToolsModal isOpen={isAllToolsModalOpen} onClose={() => setIsAllToolsModalOpen(false)} tools={tools} />
     </DashboardLayout>
   )
 }
