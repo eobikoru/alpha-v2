@@ -4,6 +4,7 @@ import { ArrowLeftOutlined, BulbOutlined, ShoppingOutlined, UploadOutlined, Twit
 import { Upload, Button } from "antd";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
+import { Navbar } from "@/src/components/navbar";
 
 export default function OnboardingFlow() {
     const router = useRouter()
@@ -48,6 +49,8 @@ export default function OnboardingFlow() {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen mt-[4rem] bg-black text-white p-6">
       <div className="mb-12">
     
@@ -180,6 +183,6 @@ export default function OnboardingFlow() {
         </div>
       </div>
     
-
+</>
   );
 }

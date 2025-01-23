@@ -37,7 +37,7 @@ export default function DashboardLayout({ children, links }: DashboardLayoutProp
       <aside className="w-64 bg-zinc-900 border-r border-zinc-800">
         <div className="p-4">
           <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-20%20at%2023.30.45-hQw5nRBIL0wRS9ymuII7yjiM9kAmYT.png"
+            src="/assets/images/alp.png"
             alt="Alpha Logo"
             width={100}
             height={40}
@@ -69,14 +69,14 @@ export default function DashboardLayout({ children, links }: DashboardLayoutProp
 
           <div className="mt-auto pt-8 border-t border-zinc-800 px-4 space-y-2">
             <Link
-              href="/notifications"
+              href="#"
               className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
             >
               <BellOutlined className="w-5 h-5" />
               <span className="text-base">Notifications</span>
             </Link>
             <Link
-              href="/support"
+              href="#"
               className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
             >
               <CustomerServiceOutlined className="w-5 h-5" />
@@ -96,12 +96,12 @@ export default function DashboardLayout({ children, links }: DashboardLayoutProp
         <header className="h-16 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-6">
           <div className="flex-1 max-w-xl">
             <div className="relative">
-              <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
+              {/* <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" /> */}
+              {/* <input
                 type="text"
                 placeholder="Search creators, categories or tools"
                 className="w-full bg-zinc-800 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-300"
-              />
+              /> */}
             </div>
           </div>
           <div className="flex items-center gap-4">

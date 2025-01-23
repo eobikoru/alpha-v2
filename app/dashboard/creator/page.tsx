@@ -48,12 +48,12 @@ export default function CreatorDashboard() {
 
   const navigationLinks = [
     { href: "/dashboard/creator", label: "Dashboard", icon: <HomeOutlined className="w-5 h-5 text-white" /> },
-    { href: "/earnings", label: "Earnings", icon: <DollarCircleOutlined className="w-5 h-5 text-white" /> },
     {
       href: "/dashboard/creator/profile",
       label: "Profile",
       icon: <UserOutlined className="w-5 h-5 text-white" />,
     },
+    { href: "#", label: "Earnings", icon: <DollarCircleOutlined className="w-5 h-5 text-white" /> },
   ]
 
   const appointments: Appointment[] = [
