@@ -2,10 +2,11 @@
 import React from "react";
 import { ArrowLeftOutlined, BulbOutlined, ShoppingOutlined, UploadOutlined, TwitterOutlined, GithubOutlined } from "@ant-design/icons";
 import { Upload, Button } from "antd";
-
+import { useRouter } from "next/navigation"
 import { useState } from "react";
 
 export default function OnboardingFlow() {
+    const router = useRouter()
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<"creator" | "buyer" | null>(null);
   const [formData, setFormData] = useState({
@@ -17,9 +18,22 @@ export default function OnboardingFlow() {
 
   const handleNext = () => {
     if (selectedRole === "creator") {
-      setStep(2);
+      setStep(2)
+    } else if (selectedRole === "buyer") {
+      // Route to buyer dashboard
+      router.push("/dashboard/buyer")
     }
-  };
+  }
+
+  const handleGoToDashboard = () => {
+    // Route based on selected role
+    if (selectedRole === "creator") {
+      router.push("/dashboard/creator")
+    } else {
+      router.push("/dashboard/buyer")
+    }
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setFormData((prev) => ({
@@ -148,7 +162,7 @@ export default function OnboardingFlow() {
                 </div>
               </div>
             </div>
-            <button className="w-full bg-lime-300 text-black font-medium py-4 rounded-full mt-12 hover:bg-lime-400 transition-colors">
+            <button   onClick={handleGoToDashboard} className="w-full bg-lime-300 text-black font-medium py-4 rounded-full mt-12 hover:bg-lime-400 transition-colors">
               Go to Dashboard
             </button>
           </>

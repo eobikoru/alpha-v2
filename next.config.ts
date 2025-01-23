@@ -6,6 +6,9 @@ const nextConfig = {
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
     return config
   },
+  images: {
+    domains: ["hebbkx1anhila5yf.public.blob.vercel-storage.com"], // Add the allowed hostname
+  },
 };
 
 module.exports = nextConfig;
