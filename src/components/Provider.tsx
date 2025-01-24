@@ -1,30 +1,25 @@
 "use client";
-
 import { ReactNode } from "react";
 import "@rainbow-me/rainbowkit/styles.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { config } from "@/config";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import config from "@/src/config";
 import merge from "lodash.merge";
 
 const Provider = ({ children }: { children: ReactNode }) => {
   const queryClient = new QueryClient();
-
-  // Custom theme for RainbowKit
-  const customTheme = merge(darkTheme(), {
+  const alphaTheme = merge(darkTheme(), {
     colors: {
-      modalBackground: "#1e3a8a",
+      modalBackground: "#000",
     },
   });
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-      <RainbowKitProvider modalSize="compact" theme={customTheme}>
-  {children as any}
-</RainbowKitProvider>
-
+        <RainbowKitProvider modalSize="compact" theme={alphaTheme}>
+          {children}
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

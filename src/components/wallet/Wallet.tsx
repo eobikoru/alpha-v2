@@ -23,11 +23,7 @@ export const Wallet = ({ children }: { children: ReactNode }) => {
           (!authenticationStatus || authenticationStatus === "authenticated");
         return (
           <div
-            className={`bg-gradient-to-r ${
-              connected
-                ? "from-green-400 to-blue-500 to-blue-800"
-                : "from-pink-500 to-yellow-500 to-yellow-700"
-            }hover:from-pink-600 hover:to-yellow-600 text-white md:px-4 md:py-2 rounded-md font-semibold md:mr-12`}
+            className="bg-green-400 text-black rounded-xl py-2 px-8 hover:bg-green-500"
             {...(!ready && {
               "aria-hidden": true,
               style: {
