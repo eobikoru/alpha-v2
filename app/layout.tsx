@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Provider from "@/src/hooks/Provider";
-
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: "Alpha",
@@ -18,7 +18,7 @@ export default function RootLayout({
       <body
        >
            <Provider>
-
+           <NextTopLoader />
         {children}
        
            </Provider>
