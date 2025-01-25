@@ -7,7 +7,12 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import config from "@/src/config";
 import merge from "lodash.merge";
 
-const Provider = ({ children }: { children: ReactNode }) => {
+const Provider = ({
+  children,
+}: {
+  children: ReactNode;
+  onclick: () => void;
+}) => {
   const queryClient = new QueryClient();
   const alphaTheme = merge(darkTheme(), {
     colors: {

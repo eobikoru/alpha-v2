@@ -4,12 +4,18 @@ import Image from "next/image";
 import { Wallet } from "../wallet/Wallet";
 import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
+
 export function Navbar() {
   const { isConnected } = useAccount();
   const router = useRouter();
-  // const handleCreate = () => {
-  //   router.push(`/button-prompt`);
-  // };
+
+  const handleCreate = () => {
+    console.log(isConnected, "connecting");
+    if (isConnected) {
+      router.push("/onboarding");
+      console.log(isConnected, "connected");
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b  border-gray-800">
@@ -24,9 +30,7 @@ export function Navbar() {
               className="w-24"
             />
           </Link>
-          <Wallet>
-            Connect Wallet
-          </Wallet>
+          <Wallet onClick={handleCreate}>Connect Wallet</Wallet>
         </div>
       </div>
     </nav>

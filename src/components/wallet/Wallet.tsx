@@ -1,7 +1,17 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ReactNode } from "react";
-export const Wallet = ({ children }: { children: ReactNode }) => {
+
+export interface WalletProps {
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+export const Wallet = ({ children, ...props }: WalletProps) => {
+  const handleClick = () => {
+    props.onClick?.();
+  };
+
   return (
     <ConnectButton.Custom>
       {({
@@ -33,22 +43,16 @@ export const Wallet = ({ children }: { children: ReactNode }) => {
               },
             })}
           >
-            {/* <Button
-              variant={walletConnected ? "outline" : "default"}
-              onClick={connectWallet}
-              className={`bg-gradient-to-r ${
-                walletConnected
-                  ? "from-green-400 to-blue-500"
-                  : "from-pink-500 to-yellow-500"
-              } hover:from-pink-600 hover:to-yellow-600 text-white font-bold`}
-            >
-              {walletConnected ? "Disconnect Wallet" : "Connect Wallet"}
-            </Button> */}
-
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <button
+                    onClick={() => {
+                      openConnectModal();
+                      handleClick();
+                    }}
+                    type="button"
+                  >
                     {children}
                   </button>
                 );
