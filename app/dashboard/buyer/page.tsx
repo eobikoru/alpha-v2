@@ -5,20 +5,23 @@ import { ArrowRightOutlined } from "@ant-design/icons"
 import Image from "next/image"
 import { HomeOutlined, DollarCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation"
-
+import Link from 'next/link';
 interface CreatorCardProps {
   name: string
   image: string
   stats: string
   sessions: number
+  id?: string
 }
 
 function CreatorCard({ name, image, stats, sessions ,id}: CreatorCardProps) {
   const router = useRouter()
   return (
+    <Link href={`/dashboard/buyer/${id}`} passHref>
+
     <div 
     className="bg-zinc-900 rounded-xl p-4 hover:ring-2 hover:ring-lime-300 transition-all cursor-pointer"
-      onClick={() => router.push(`/dashboard/buyer/${id}`)} 
+     
     >
       <Image src={image || "/placeholder.svg"} alt={name} width={200} height={150} className="w-full rounded-lg mb-4" />
       <h3 className="font-medium text-white mb-1">{name}</h3>
@@ -26,7 +29,9 @@ function CreatorCard({ name, image, stats, sessions ,id}: CreatorCardProps) {
       <div className="flex items-center gap-2 text-sm text-zinc-500">
         <span className="flex items-center gap-1">{sessions} Sessions booked</span>
       </div>
+
     </div>
+    </Link>
   )
 }
 

@@ -1,10 +1,12 @@
 "use client"
-
+import { useState } from "react"
 import { Tabs, Button } from "antd"
 import { GlobalOutlined, TwitterOutlined } from "@ant-design/icons"
 import Image from "next/image"
 import DashboardLayout from "@/src/components/layout/dashboard-layout"
 import { HomeOutlined, DollarCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { BuyModal } from "@/src/components/modals/buy-modal"
+import { BookSessionModal } from "@/src/components/modals/book-section-modal"
 
 interface CreatorProfileProps {
   params: {
@@ -13,6 +15,13 @@ interface CreatorProfileProps {
 }
 
 export default function CreatorProfile({ params }: CreatorProfileProps) {
+    const [buyModalOpen, setBuyModalOpen] = useState(false)
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
+    const creator = {
+      name: "Kamakazi Shimeru",
+      title: "Trader",
+      avatar: "/assets/images/bnb.png",
+    }
     const navigationLinks = [
         { href: "/dashboard/buyer", label: "Home", icon: <HomeOutlined className="w-5 h-5 text-white" /> },
         // { href: "/profile", label: "Profile", icon: <UserOutlined className="w-5 h-5 text-white" /> },
@@ -45,9 +54,13 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
             />
             <h2 className="text-2xl font-bold text-white mb-2">Kamakazi</h2>
           </div>
-          <Button className="bg-lime-300 hover:bg-lime-400 text-black font-medium h-10 flex items-center">
-            Book a session
-          </Button>
+          <button
+  onClick={() => setIsBookingModalOpen(true)}
+  className="bg-lime-300 hover:bg-lime-400 text-black font-medium h-10 flex items-center px-4 rounded"
+>
+  Book a session
+</button>
+
         </div>
 
         {/* Tabs */}
@@ -81,7 +94,7 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
             {
               key: "reviews",
               label: "Reviews",
-              children: <div className="text-zinc-400">No reviews yet</div>,
+              children: <div className="text-zinc-400 text-center mt-10">No reviews yet</div>,
             },
           ]}
         />
@@ -121,8 +134,13 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
                       </div>
                       <span className="text-lime-400">300KYA</span>
                     </div>
-                    <Button className="w-full mt-4 bg-lime-300 hover:bg-lime-400 text-black font-medium">Buy</Button>
-                  </div>
+                    <button
+  onClick={() => setBuyModalOpen(true)}
+  className="w-full mt-4 bg-lime-300 hover:bg-lime-400 text-black font-medium py-2 rounded"
+>
+  Buy
+</button>
+    </div>
                 </div>
               </div>
             ))}
@@ -130,6 +148,9 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
         </div>
       </div>
       </div>
+      <BuyModal isOpen={buyModalOpen} onClose={() => setBuyModalOpen(false)} amount="300" />
+      <BookSessionModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} creator={creator} />
+      
       </DashboardLayout>
       <style jsx global>{`
         .creator-tabs .ant-tabs-nav::before {
