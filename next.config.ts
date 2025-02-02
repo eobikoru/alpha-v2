@@ -7,7 +7,7 @@ const nextConfig = {
     return config
   },
   images: {
-    domains: ["hebbkx1anhila5yf.public.blob.vercel-storage.com"], // Add the allowed hostname
+    domains: ["hebbkx1anhila5yf.public.blob.vercel-storage.com" ,'olive-immediate-ptarmigan-973.mypinata.cloud'], 
   },
 };
 
