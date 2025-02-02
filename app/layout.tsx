@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Provider from "@/src/hooks/Provider";
 import NextTopLoader from 'nextjs-toploader';
+import Provider from "@/src/components/Provider";
 
 export const metadata: Metadata = {
   title: "Alpha",

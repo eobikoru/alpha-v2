@@ -10,8 +10,8 @@ import merge from "lodash.merge";
 const Provider = ({
   children,
 }: {
-  children: ReactNode;
-  onclick: () => void;
+  children?: ReactNode;
+  onclick?: () => void;
 }) => {
   const queryClient = new QueryClient();
   const alphaTheme = merge(darkTheme(), {
