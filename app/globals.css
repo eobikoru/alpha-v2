@@ -118,5 +118,110 @@ body {
 .ant-input::placeholder {
   color: #666 !important;
 }
+  .custom-tabs .ant-tabs-nav::before {
+          border-bottom: 1px solid rgb(63 63 70);
+        }
+        .custom-tabs .ant-tabs-tab {
+          color: rgb(161 161 170);
+          padding: 12px 0;
+          margin: 0 16px 0 0;
+        }
+        .custom-tabs .ant-tabs-tab:hover {
+          color: white;
+        }
+        .custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+          color: rgb(34 197 94);
+        }
+        .custom-tabs .ant-tabs-ink-bar {
+          background: rgb(34 197 94);
+        }
+        .ant-card {
+          background: transparent;
+        }
+        .ant-btn-text:hover {
+          background-color: rgba(34, 197, 94, 0.1) !important;
+        }
+        .ant-btn-default {
+          border-color: rgb(34 197 94);
+          color: rgb(34 197 94);
+        }
+        .ant-btn-default:hover {
+          border-color: rgb(34 197 94);
+          color: rgb(34 197 94);
+          opacity: 0.8;
+        }
+        .ant-btn-link {
+          color: rgb(34 197 94);
+        }
+        .ant-btn-link:hover {
+          color: rgb(34 197 94);
+          opacity: 0.8;
+        }
+        
 
-
+        .custom-tabs .ant-tabs-nav::before {
+          border-bottom: 1px solid rgb(63 63 70);
+        }
+        .custom-tabs .ant-tabs-tab {
+          color: rgb(161 161 170);
+          padding: 12px 0;
+          margin: 0 16px 0 0;
+        }
+        .custom-tabs .ant-tabs-tab:hover {
+          color: white;
+        }
+        .custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+          color: rgb(34 197 94);
+        }
+        .custom-tabs .ant-tabs-ink-bar {
+          background: rgb(34 197 94);
+        }
+        .ant-card {
+          background: transparent;
+        }
+        .ant-btn-text:hover {
+          background-color: rgba(34, 197, 94, 0.1) !important;
+        }
+        .ant-btn-default {
+          border-color: rgb(34 197 94);
+          color: rgb(34 197 94);
+        }
+        .ant-btn-default:hover {
+          border-color: rgb(34 197 94);
+          color: rgb(34 197 94);
+          opacity: 0.8;
+        }
+        .ant-btn-link {
+          color: rgb(34 197 94);
+        }
+        .ant-btn-link:hover {
+          color: rgb(34 197 94);
+          opacity: 0.8;
+        }
+        .custom-modal .ant-modal-content,
+        .custom-modal .ant-modal-header {
+          background-color: rgb(24 24 27);
+          color: white;
+          padding: 24px;
+        }
+        .custom-modal .ant-modal-header {
+          border-bottom: 1px solid rgb(63 63 70);
+          margin-bottom: 20px;
+          padding-bottom: 16px;
+        }
+        .custom-modal .ant-modal-body {
+          padding: 0 24px 24px;
+        }
+        .custom-modal .ant-modal-title {
+          color: white;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .custom-modal .ant-modal-close-x {
+          color: rgb(161 161 170);
+        }
+        .custom-modal .ant-modal-footer {
+          border-top: 1px solid rgb(63 63 70);
+          padding-top: 16px;
+        }
+      
