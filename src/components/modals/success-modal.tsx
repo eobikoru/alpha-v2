@@ -14,6 +14,7 @@ export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
 
   const handleGoToDashboard = () => {
     onClose(); // Close the success modal
+    router.push("/dashboard/creator"); // Navigate to creator dashboard
   };
 
   return (
