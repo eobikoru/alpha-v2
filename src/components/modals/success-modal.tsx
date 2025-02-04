@@ -1,21 +1,20 @@
-"use client"
+"use client";
 
-import { Check } from 'lucide-react'
-import { useRouter } from "next/navigation"
-import { Modal } from "antd"
+import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Modal } from "antd";
 
 interface SuccessModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleGoToDashboard = () => {
-    onClose() // Close the success modal
-    router.push("/dashboard/creator") // Navigate to creator dashboard
-  }
+    onClose(); // Close the success modal
+  };
 
   return (
     <Modal
@@ -30,8 +29,10 @@ export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
         <div className="w-12 h-12 bg-lime-400/20 rounded-full flex items-center justify-center mb-6">
           <Check className="w-6 h-6 text-lime-400" />
         </div>
-        
-        <h2 className="text-2xl font-semibold text-white mb-2">Tool Uploaded Successfully!</h2>
+
+        <h2 className="text-2xl font-semibold text-white mb-2">
+          Tool Uploaded Successfully!
+        </h2>
         <p className="text-zinc-400 mb-8">
           Your tool has been successfully added to your profile.
           <br />
@@ -46,5 +47,5 @@ export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
         </button>
       </div>
     </Modal>
-  )
+  );
 }

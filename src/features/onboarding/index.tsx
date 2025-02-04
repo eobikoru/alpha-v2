@@ -367,9 +367,9 @@ export default function OnboardingFlow() {
                     }`}
                   >
                     {isPending ? (
-                      <span className="flex items-center">
-                        <ClipLoader size={14} color="#fff" className="mr-2" />{" "}
-                        Submitting...
+                      <span className="flex items-center justify-center w-full">
+                        Submitting...{" "}
+                        <ClipLoader size={14} color="#fff" className="mr-2" />
                       </span>
                     ) : (
                       "Submit"

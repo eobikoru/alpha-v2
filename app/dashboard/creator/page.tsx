@@ -1,60 +1,123 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import DashboardLayout from "@/src/components/layout/dashboard-layout"
-import { HomeOutlined, DollarCircleOutlined, UserOutlined } from "@ant-design/icons"
-import Image from "next/image"
-import { Edit2, Share2, Plus, Calendar, TrendingUp, FileText, Video, ExternalLink } from "lucide-react"
-import { Button, Tabs } from "antd"
-import { AddToolModal } from "@/src/components/modals/add-tool-modal"
-import { SetAvailabilityModal } from "@/src/components/modals/set-availability-modal"
-import { AppointmentDetailsModal } from "@/src/components/modals/appointment-details-modal"
-import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-modal"
-import { AllToolsModal } from "@/src/components/modals/all-tools-modal"
+import { useState } from "react";
+import DashboardLayout from "@/src/components/layout/dashboard-layout";
+import {
+  HomeOutlined,
+  DollarCircleOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import Image from "next/image";
+import {
+  Edit2,
+  Share2,
+  Plus,
+  Calendar,
+  TrendingUp,
+  FileText,
+  Video,
+  ExternalLink,
+} from "lucide-react";
+import { Button, Tabs } from "antd";
+import { AddToolModal } from "@/src/components/modals/add-tool-modal";
+import { SetAvailabilityModal } from "@/src/components/modals/set-availability-modal";
+import { AppointmentDetailsModal } from "@/src/components/modals/appointment-details-modal";
+import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-modal";
+import { AllToolsModal } from "@/src/components/modals/all-tools-modal";
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 
 interface Appointment {
-  id: string
-  username: string
-  time: string
-  date: string
-  avatar: string
-  duration: string
-  status: "upcoming" | "completed" | "cancelled"
-  price: string
-  notes?: string
+  id: string;
+  username: string;
+  time: string;
+  date: string;
+  avatar: string;
+  duration: string;
+  status: "upcoming" | "completed" | "cancelled";
+  price: string;
+  notes?: string;
+}
+
+export interface Profile {
+  name: string;
+  bio: string;
+  githubHandle: string;
+  twitterHandle: string;
+  photoHash: string;
 }
 
 interface Tool {
-  id: string
-  title: string
-  description: string
-  price: string
-  image: string
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  image: string;
   stats: {
-    pdfs: number
-    videos: number
-    purchases: number
-  }
+    pdfs: number;
+    videos: number;
+    purchases: number;
+  };
 }
 
 export default function CreatorDashboard() {
-  const [timeRange, setTimeRange] = useState("7d")
-  const [isAddToolModalOpen, setIsAddToolModalOpen] = useState(false)
-  const [isSetAvailabilityModalOpen, setIsSetAvailabilityModalOpen] = useState(false)
-  const [isAllAppointmentsModalOpen, setIsAllAppointmentsModalOpen] = useState(false)
-  const [isAppointmentDetailsModalOpen, setIsAppointmentDetailsModalOpen] = useState(false)
-  const [isAllToolsModalOpen, setIsAllToolsModalOpen] = useState(false)
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  const { address } = useAccount();
+  const { data: profileData, isLoading: isProfileLoading } = useReadContracts({
+    contracts: [
+      {
+        abi: CONTRACT_ABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "getCreatorProfile",
+        args: [address],
+      },
+      {
+        abi: CONTRACT_ABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "getCreatorEarnings",
+        args: [address],
+      },
+    ],
+  });
+
+  const [profileInfo, earningsInfo] = profileData || [];
+
+  const { result: { name, bio, photoHash } = {} }: any = profileInfo || {};
+
+  const {
+    result: { totalEarnings, toolSales, consultationRevenue } = {},
+  }: any = earningsInfo || {};
+
+  console.log(profileData, name, bio, photoHash);
+
+  const [timeRange, setTimeRange] = useState("7d");
+  const [isAddToolModalOpen, setIsAddToolModalOpen] = useState(false);
+  const [isSetAvailabilityModalOpen, setIsSetAvailabilityModalOpen] =
+    useState(false);
+  const [isAllAppointmentsModalOpen, setIsAllAppointmentsModalOpen] =
+    useState(false);
+  const [isAppointmentDetailsModalOpen, setIsAppointmentDetailsModalOpen] =
+    useState(false);
+  const [isAllToolsModalOpen, setIsAllToolsModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   const navigationLinks = [
-    { href: "/dashboard/creator", label: "Dashboard", icon: <HomeOutlined className="w-5 h-5 text-white" /> },
+    {
+      href: "/dashboard/creator",
+      label: "Dashboard",
+      icon: <HomeOutlined className="w-5 h-5 text-white" />,
+    },
     {
       href: "/dashboard/creator/profile",
       label: "Profile",
       icon: <UserOutlined className="w-5 h-5 text-white" />,
     },
-    { href: "#", label: "Earnings", icon: <DollarCircleOutlined className="w-5 h-5 text-white" /> },
-  ]
+    {
+      href: "#",
+      label: "Earnings",
+      icon: <DollarCircleOutlined className="w-5 h-5 text-white" />,
+    },
+  ];
 
   const appointments: Appointment[] = [
     {
@@ -98,7 +161,7 @@ export default function CreatorDashboard() {
       status: "cancelled",
       price: "0.1 ETH",
     },
-  ]
+  ];
 
   const tools: Tool[] = [
     {
@@ -127,18 +190,30 @@ export default function CreatorDashboard() {
         purchases: 5,
       },
     },
-  ]
+  ];
 
   const handleAppointmentClick = (appointment: Appointment) => {
-    setSelectedAppointment(appointment)
-    setIsAppointmentDetailsModalOpen(true)
-    setIsAllAppointmentsModalOpen(false)
-  }
+    setSelectedAppointment(appointment);
+    setIsAppointmentDetailsModalOpen(true);
+    setIsAllAppointmentsModalOpen(false);
+  };
 
-  const AppointmentCard = ({ id, username, time, date, avatar }: Appointment) => (
+  const AppointmentCard = ({
+    id,
+    username,
+    time,
+    date,
+    avatar,
+  }: Appointment) => (
     <div className="flex items-center justify-between bg-zinc-900/50 rounded-lg p-4 backdrop-blur-sm">
       <div className="flex items-center gap-3">
-        <Image src={avatar || "/placeholder.svg"} alt={username} width={40} height={40} className="rounded-full" />
+        <Image
+          src={avatar || "/placeholder.svg"}
+          alt={username}
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
         <span className="text-white">{username}</span>
       </div>
       <div className="flex items-center gap-4">
@@ -150,9 +225,9 @@ export default function CreatorDashboard() {
           type="link"
           className="text-lime-400 hover:text-lime-500 p-0"
           onClick={() => {
-            const appointment = appointments.find((a) => a.id === id)
+            const appointment = appointments.find((a) => a.id === id);
             if (appointment) {
-              handleAppointmentClick(appointment)
+              handleAppointmentClick(appointment);
             }
           }}
         >
@@ -160,7 +235,7 @@ export default function CreatorDashboard() {
         </Button>
       </div>
     </div>
-  )
+  );
 
   const ToolCard = ({ tool }: { tool: Tool }) => (
     <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-6">
@@ -173,20 +248,28 @@ export default function CreatorDashboard() {
           className="rounded-full"
         />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-2">{tool.title}</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            {tool.title}
+          </h3>
           <p className="text-sm text-zinc-400 mb-4">{tool.description}</p>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-zinc-400" />
-                <span className="text-xs text-zinc-400">{tool.stats.pdfs} PDF</span>
+                <span className="text-xs text-zinc-400">
+                  {tool.stats.pdfs} PDF
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Video className="w-4 h-4 text-zinc-400" />
-                <span className="text-xs text-zinc-400">{tool.stats.videos} Videos</span>
+                <span className="text-xs text-zinc-400">
+                  {tool.stats.videos} Videos
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-lime-400">{tool.stats.purchases} Purchases</span>
+                <span className="text-xs text-lime-400">
+                  {tool.stats.purchases} Purchases
+                </span>
               </div>
             </div>
             <span className="text-lime-400 font-medium">{tool.price}</span>
@@ -194,14 +277,20 @@ export default function CreatorDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 
   return (
     <DashboardLayout links={navigationLinks}>
       <div className="min-h-screen bg-black">
         {/* Banner Image */}
         <div className="relative h-48 w-full">
-          <Image src="/assets/images/banner.png" alt="Profile Banner" fill className="object-cover" priority />
+          <Image
+            src="/assets/images/banner.png"
+            alt="Profile Banner"
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
 
         {/* Profile Section */}
@@ -209,16 +298,16 @@ export default function CreatorDashboard() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div className="flex items-end gap-6">
               <div className="relative">
-                <Image
-                  src="/placeholder.svg?height=160&width=160"
+                <img
+                  src={` https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${photoHash}`}
                   alt="Profile"
-                  width={160}
-                  height={160}
-                  className="rounded-full border-4 border-black bg-yellow-400"
+                  // width={160}
+                  // height={160}
+                  className="rounded-full w-[160px] h-[160px] border-4 border-black bg-yellow-400"
                 />
               </div>
               <div className="mb-4">
-                <h1 className="text-3xl font-bold text-white">Cristiano Ronaldo</h1>
+                <h1 className="text-3xl font-bold text-white">{name}</h1>
               </div>
             </div>
             <div className="flex gap-3">
@@ -243,13 +332,13 @@ export default function CreatorDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4">
               <p className="text-sm text-zinc-400">Total earnings</p>
-              <p className="text-2xl font-bold text-white">0 USDT</p>
+              <p className="text-2xl font-bold text-white">{`${totalEarnings} USDT`}</p>
             </div>
             <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-white">0</p>
-                  <p className="text-sm text-zinc-400">Buyers</p>
+                  <p className="text-2xl font-bold text-white">{toolSales}</p>
+                  <p className="text-sm text-zinc-400">Total Sales</p>
                 </div>
                 <TrendingUp className="text-lime-400" />
                 <select
@@ -292,18 +381,17 @@ export default function CreatorDashboard() {
                 label: "Overview",
                 children: (
                   <div className="pt-6">
-                    <p className="text-zinc-400">
-                      ⚽ Football Legend | 🏆 5x Ballon d&apos;Or Winner | ⚽ Record-Breaker
-                      <br />
-                      Global icon with an unstoppable passion for football and excellence. Proud father, entrepreneur,
-                      and philanthropist. Sharing moments from my journey on and off the pitch. 💪✨
-                    </p>
+                    <p className="text-zinc-400">{bio}</p>
                     <div className="flex gap-3 mt-4">
                       <a
                         href="#"
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900/50 backdrop-blur-sm text-zinc-400 hover:text-white transition-colors"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
                           <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                         </svg>
                       </a>
@@ -322,7 +410,9 @@ export default function CreatorDashboard() {
                 label: "Reviews",
                 children: (
                   <div className="pt-6">
-                    <div className="text-center text-zinc-400">No reviews yet</div>
+                    <div className="text-center text-zinc-400">
+                      No reviews yet
+                    </div>
                   </div>
                 ),
               },
@@ -336,7 +426,9 @@ export default function CreatorDashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-white">Upcoming Appointments</h2>
+                  <h2 className="text-lg font-semibold text-white">
+                    Upcoming Appointments
+                  </h2>
                   <span className="text-xs bg-zinc-800/50 backdrop-blur-sm px-2 py-1 rounded-full text-lime-400">
                     15
                   </span>
@@ -362,7 +454,9 @@ export default function CreatorDashboard() {
             {/* Tools Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-white">Recent Tools</h2>
+                <h2 className="text-lg font-semibold text-white">
+                  Recent Tools
+                </h2>
                 <Button
                   type="link"
                   className="text-lime-400 hover:text-lime-500 p-0"
@@ -380,8 +474,14 @@ export default function CreatorDashboard() {
           </div>
         </div>
       </div>
-      <AddToolModal isOpen={isAddToolModalOpen} onClose={() => setIsAddToolModalOpen(false)} />
-      <SetAvailabilityModal isOpen={isSetAvailabilityModalOpen} onClose={() => setIsSetAvailabilityModalOpen(false)} />
+      <AddToolModal
+        isOpen={isAddToolModalOpen}
+        onClose={() => setIsAddToolModalOpen(false)}
+      />
+      <SetAvailabilityModal
+        isOpen={isSetAvailabilityModalOpen}
+        onClose={() => setIsSetAvailabilityModalOpen(false)}
+      />
       <AllAppointmentsModal
         isOpen={isAllAppointmentsModalOpen}
         onClose={() => setIsAllAppointmentsModalOpen(false)}
@@ -395,8 +495,11 @@ export default function CreatorDashboard() {
           appointment={selectedAppointment}
         />
       )}
-      <AllToolsModal isOpen={isAllToolsModalOpen} onClose={() => setIsAllToolsModalOpen(false)} tools={tools} />
+      <AllToolsModal
+        isOpen={isAllToolsModalOpen}
+        onClose={() => setIsAllToolsModalOpen(false)}
+        tools={tools}
+      />
     </DashboardLayout>
-  )
+  );
 }
-
