@@ -25,11 +25,13 @@ interface DashboardLayoutProps {
   links: LinkItem[];
 }
 
-export default function DashboardLayout({ children, links }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children,
+  links,
+}: DashboardLayoutProps) {
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
-  console.log("Received links in DashboardLayout:", links);
 
   return (
     <div className="flex h-screen bg-black">
@@ -53,12 +55,15 @@ export default function DashboardLayout({ children, links }: DashboardLayoutProp
                   key={href}
                   href={href}
                   className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                    isActive(href) ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                    isActive(href)
+                      ? "bg-zinc-800 text-white"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800"
                   }`}
                 >
                   <span className="flex items-center gap-3">
                     {icon}
-                    <span className="text-base">{label}</span> {/* Ensuring label is visible */}
+                    <span className="text-base">{label}</span>{" "}
+                    {/* Ensuring label is visible */}
                   </span>
                 </Link>
               ))

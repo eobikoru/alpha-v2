@@ -29,8 +29,6 @@ export function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
   });
   const [showSuccess, setShowSuccess] = useState(false);
 
-  console.log(form);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,8 +42,6 @@ export function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
     } catch (error) {
       console.error(error);
     }
-    // Handle form submission
-    console.log("Form submitted:", form);
     // Close the add tool modal and show success modal
 
     onClose();

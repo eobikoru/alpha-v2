@@ -25,7 +25,7 @@ import { AppointmentDetailsModal } from "@/src/components/modals/appointment-det
 import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-modal";
 import { AllToolsModal } from "@/src/components/modals/all-tools-modal";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant";
-import { useAccount, useReadContract, useReadContracts } from "wagmi";
+import { useAccount, useReadContracts } from "wagmi";
 
 interface Appointment {
   id: string;
@@ -86,8 +86,6 @@ export default function CreatorDashboard() {
   const {
     result: { totalEarnings, toolSales, consultationRevenue } = {},
   }: any = earningsInfo || {};
-
-  console.log(profileData, name, bio, photoHash);
 
   const [timeRange, setTimeRange] = useState("7d");
   const [isAddToolModalOpen, setIsAddToolModalOpen] = useState(false);
