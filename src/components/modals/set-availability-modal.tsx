@@ -46,24 +46,6 @@ export function SetAvailabilityModal({
     return days;
   };
 
-  // Handle date selection
-  const handleDateSelect = (day: number) => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(day);
-    setSelectedDate(newDate);
-  };
-
-  // Handle time selection
-  const handleTimeChange = (
-    value: string,
-    type: "hours" | "minutes" | "period"
-  ) => {
-    setSelectedTime((prev) => ({
-      ...prev,
-      [type]: value,
-    }));
-  };
-
   const days = getDaysInMonth(selectedDate);
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -101,15 +83,17 @@ export function SetAvailabilityModal({
 
   const handleSave = async () => {
     const unixTimestamp = calculateUnixTimestamp();
-    try {
-      await writeContract({
-        abi: CONTRACT_ABI,
-        address: CONTRACT_ADDRESS,
-        functionName: "setConsultationAvailability",
-        args: [unixTimestamp],
-      });
-    } catch (error) {
-      console.error(error);
+    if (unixTimestamp) {
+      try {
+        await writeContract({
+          abi: CONTRACT_ABI,
+          address: CONTRACT_ADDRESS,
+          functionName: "addConsultationSlot",
+          args: [unixTimestamp],
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
     onClose();
   };

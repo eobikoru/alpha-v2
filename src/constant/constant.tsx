@@ -1,5 +1,11 @@
-export const CONTRACT_ADDRESS = "0x934932752EDDeb6150e412E04D747bd974164A7d";
+export const CONTRACT_ADDRESS = "0x054ac154cf6c757697b290fb7a824b6ac2262f82";
+// export const CONTRACT_ADDRESS = "0x934932752EDDeb6150e412E04D747bd974164A7d";
 export const CONTRACT_ABI = [
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
   {
     anonymous: false,
     inputs: [
@@ -8,12 +14,6 @@ export const CONTRACT_ABI = [
         internalType: "address",
         name: "creator",
         type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "isAvailable",
-        type: "bool",
       },
       {
         indexed: false,
@@ -43,11 +43,36 @@ export const CONTRACT_ABI = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "timestamp",
+        name: "slotId",
         type: "uint256",
       },
     ],
     name: "ConsultationBooked",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "slotId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+    ],
+    name: "ConsultationSlotAdded",
     type: "event",
   },
   {
@@ -67,6 +92,25 @@ export const CONTRACT_ABI = [
       },
     ],
     name: "CreatorRegistered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PlatformFeeWithdrawn",
     type: "event",
   },
   {
@@ -139,6 +183,45 @@ export const CONTRACT_ABI = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newTreasuryWallet",
+        type: "address",
+      },
+    ],
+    name: "TreasuryWalletUpdated",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "PLATFORM_FEE_PERCENTAGE",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_timestamp",
+        type: "uint256",
+      },
+    ],
+    name: "addConsultationSlot",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "string",
@@ -169,13 +252,96 @@ export const CONTRACT_ABI = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "allConsultationSlots",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isBooked",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "allTools",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isActive",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "_creator",
         type: "address",
       },
       {
         internalType: "uint256",
-        name: "_timestamp",
+        name: "_slotId",
         type: "uint256",
       },
     ],
@@ -194,6 +360,11 @@ export const CONTRACT_ABI = [
     ],
     name: "consultationInfos",
     outputs: [
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
       {
         internalType: "bool",
         name: "isAvailable",
@@ -374,6 +545,139 @@ export const CONTRACT_ABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getAllConsultationSlots",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isBooked",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Creator.ConsultationSlot[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllRegisteredCreators",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllTools",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "category",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isActive",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Creator.Tool[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAvailableConsultationSlots",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isBooked",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Creator.ConsultationSlot[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -386,6 +690,11 @@ export const CONTRACT_ABI = [
       {
         components: [
           {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
             internalType: "bool",
             name: "isAvailable",
             type: "bool",
@@ -396,14 +705,77 @@ export const CONTRACT_ABI = [
             type: "uint256",
           },
           {
-            internalType: "uint256[]",
+            components: [
+              {
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+              },
+              {
+                internalType: "address",
+                name: "creator",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "timestamp",
+                type: "uint256",
+              },
+              {
+                internalType: "bool",
+                name: "isBooked",
+                type: "bool",
+              },
+            ],
+            internalType: "struct Creator.ConsultationSlot[]",
             name: "availableSlots",
-            type: "uint256[]",
+            type: "tuple[]",
           },
         ],
         internalType: "struct Creator.ConsultationInfo",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_creator",
+        type: "address",
+      },
+    ],
+    name: "getConsultationSlotsByCreator",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isBooked",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Creator.ConsultationSlot[]",
+        name: "",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",
@@ -564,6 +936,62 @@ export const CONTRACT_ABI = [
         name: "_creator",
         type: "address",
       },
+    ],
+    name: "getToolsByCreator",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "creator",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "category",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isActive",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Creator.Tool[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_creator",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "_toolId",
@@ -611,19 +1039,28 @@ export const CONTRACT_ABI = [
   {
     inputs: [
       {
-        internalType: "bool",
-        name: "_isAvailable",
-        type: "bool",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
+    ],
+    name: "registeredCreators",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "uint256",
         name: "_hourlyRate",
         type: "uint256",
-      },
-      {
-        internalType: "uint256[]",
-        name: "_availableSlots",
-        type: "uint256[]",
       },
     ],
     name: "setConsultationAvailability",
@@ -648,6 +1085,52 @@ export const CONTRACT_ABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalPlatformFees",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "treasuryWallet",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_newTreasuryWallet",
+        type: "address",
+      },
+    ],
+    name: "updateTreasuryWallet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawPlatformFees",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

@@ -50,6 +50,7 @@ export function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
   useEffect(() => {
     if (isSuccessHash) {
       setShowSuccess(true);
+      onClose();
     }
   });
 

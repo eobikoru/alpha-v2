@@ -25,7 +25,7 @@ import { AppointmentDetailsModal } from "@/src/components/modals/appointment-det
 import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-modal";
 import { AllToolsModal } from "@/src/components/modals/all-tools-modal";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant";
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 
 interface Appointment {
   id: string;
@@ -49,15 +49,11 @@ export interface Profile {
 
 interface Tool {
   id: string;
-  title: string;
+  name: string;
   description: string;
   price: string;
   image: string;
-  stats: {
-    pdfs: number;
-    videos: number;
-    purchases: number;
-  };
+  category: string;
 }
 
 export default function CreatorDashboard() {
@@ -76,16 +72,24 @@ export default function CreatorDashboard() {
         functionName: "getCreatorEarnings",
         args: [address],
       },
+      {
+        abi: CONTRACT_ABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "getConsultationSlotsByCreator",
+        args: [address],
+      },
     ],
   });
 
-  const [profileInfo, earningsInfo] = profileData || [];
+  const [profileInfo, earningsInfo, consultationSlots] = profileData || [];
 
   const { result: { name, bio, photoHash } = {} }: any = profileInfo || {};
 
-  const {
-    result: { totalEarnings, toolSales, consultationRevenue } = {},
-  }: any = earningsInfo || {};
+  const { result: { totalEarnings, toolSales } = {} }: any = earningsInfo || {};
+
+  const Appointments = profileData?.[2]?.result ?? [];
+
+  console.log(profileData, Appointments);
 
   const [timeRange, setTimeRange] = useState("7d");
   const [isAddToolModalOpen, setIsAddToolModalOpen] = useState(false);
@@ -161,34 +165,12 @@ export default function CreatorDashboard() {
     },
   ];
 
-  const tools: Tool[] = [
-    {
-      id: "1",
-      title: "Top Degen Resource",
-      description:
-        "The ultimate hub for degens in the Web3 space. Stay ahead of the curve with real-time alpha, expert insights, and curated guides on trading, NFTs, DeFi, and crypto trends",
-      price: "300KYA",
-      image: "/placeholder.svg?height=80&width=80",
-      stats: {
-        pdfs: 1,
-        videos: 3,
-        purchases: 5,
-      },
-    },
-    {
-      id: "2",
-      title: "Top Degen Resource",
-      description:
-        "The ultimate hub for degens in the Web3 space. Stay ahead of the curve with real-time alpha, expert insights, and curated guides on trading, NFTs, DeFi, and crypto trends",
-      price: "300KYA",
-      image: "/placeholder.svg?height=80&width=80",
-      stats: {
-        pdfs: 1,
-        videos: 3,
-        purchases: 5,
-      },
-    },
-  ];
+  const { data: tools, isLoading }: any = useReadContract({
+    abi: CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    functionName: "getCreatorTools",
+    args: [address],
+  });
 
   const handleAppointmentClick = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -196,13 +178,14 @@ export default function CreatorDashboard() {
     setIsAllAppointmentsModalOpen(false);
   };
 
-  const AppointmentCard = ({
-    id,
-    username,
-    time,
-    date,
-    avatar,
-  }: Appointment) => (
+  const AppointmentCard = () => (
+    // {
+    // id,
+    // username,
+    // time,
+    // date,
+    // avatar,
+    // }: Appointment
     <div className="flex items-center justify-between bg-zinc-900/50 rounded-lg p-4 backdrop-blur-sm">
       <div className="flex items-center gap-3">
         <Image
@@ -238,39 +221,35 @@ export default function CreatorDashboard() {
   const ToolCard = ({ tool }: { tool: Tool }) => (
     <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-6">
       <div className="flex items-start gap-4">
-        <Image
-          src={tool.image || "/placeholder.svg"}
-          alt={tool.title}
-          width={80}
-          height={80}
-          className="rounded-full"
-        />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-2">
-            {tool.title}
-          </h3>
+          <h3 className="text-lg font-semibold text-white mb-2">{tool.name}</h3>
           <p className="text-sm text-zinc-400 mb-4">{tool.description}</p>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-zinc-400" />
-                <span className="text-xs text-zinc-400">
-                  {tool.stats.pdfs} PDF
-                </span>
+                <a
+                  href={`https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${tool?.category}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-lime-400 underline"
+                >
+                  {tool?.name} PDF
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Video className="w-4 h-4 text-zinc-400" />
                 <span className="text-xs text-zinc-400">
-                  {tool.stats.videos} Videos
+                  {/* {tool.stats.videos} Videos */}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-lime-400">
-                  {tool.stats.purchases} Purchases
+                  {/* {tool.stats.purchases} Purchases */}
                 </span>
               </div>
             </div>
-            <span className="text-lime-400 font-medium">{tool.price}</span>
+            <span className="text-lime-400 font-medium">{tool.price} KAIA</span>
           </div>
         </div>
       </div>
@@ -464,7 +443,7 @@ export default function CreatorDashboard() {
                 </Button>
               </div>
               <div className="space-y-4">
-                {tools.map((tool) => (
+                {tools?.map((tool: any) => (
                   <ToolCard key={tool.id} tool={tool} />
                 ))}
               </div>

@@ -1,33 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Modal } from "antd"
-import { ArrowLeft, Search, FileText, Video } from "lucide-react"
-import Image from "next/image"
+import { useState } from "react";
+import { Modal } from "antd";
+import { ArrowLeft, Search, FileText, Video } from "lucide-react";
+import Image from "next/image";
 
 interface Tool {
-  id: string
-  title: string
-  description: string
-  price: string
-  image: string
-  stats: {
-    pdfs: number
-    videos: number
-    purchases: number
-  }
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  category: string;
 }
 
 interface AllToolsModalProps {
-  isOpen: boolean
-  onClose: () => void
-  tools: Tool[]
+  isOpen: boolean;
+  onClose: () => void;
+  tools: Tool[];
 }
 
 export function AllToolsModal({ isOpen, onClose, tools }: AllToolsModalProps) {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTools = tools.filter((tool) => tool.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredTools = tools?.filter((tool: any) =>
+    tool?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Modal
@@ -41,7 +38,10 @@ export function AllToolsModal({ isOpen, onClose, tools }: AllToolsModalProps) {
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
           <h2 className="text-xl font-semibold text-white">All Tools</h2>
@@ -61,34 +61,55 @@ export function AllToolsModal({ isOpen, onClose, tools }: AllToolsModalProps) {
 
         {/* Tools List */}
         <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-          {filteredTools.map((tool) => (
-            <div key={tool.id} className="bg-zinc-800/50 rounded-lg p-4 hover:bg-zinc-800 transition-colors">
+          {filteredTools?.map((tool: any) => (
+            <div
+              key={tool.id}
+              className="bg-zinc-800/50 rounded-lg p-4 hover:bg-zinc-800 transition-colors"
+            >
               <div className="flex items-start gap-4">
-                <Image
-                  src={tool.image || "/placeholder.svg"}
-                  alt={tool.title}
-                  width={80}
-                  height={80}
-                  className="rounded-full"
-                />
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-2">{tool.title}</h3>
-                  <p className="text-sm text-zinc-400 mb-4">{tool.description}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {tool.name}
+                  </h3>
+                  <p className="text-sm text-zinc-400 mb-4">
+                    {tool.description}
+                  </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-zinc-400" />
-                        <span className="text-xs text-zinc-400">{tool.stats.pdfs} PDF</span>
+                        <a
+                          href={`https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${tool?.category}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-lime-400 underline"
+                        >
+                          {tool.name} PDF
+                        </a>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Video className="w-4 h-4 text-zinc-400" />
-                        <span className="text-xs text-zinc-400">{tool.stats.videos} Videos</span>
+                        <Video
+                          href={`https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${tool?.category}`}
+                          className="w-4 h-4 text-zinc-400"
+                        />
+                        <span className="text-xs text-zinc-400">
+                          {/* {tool.stats.videos} Videos */}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-lime-400">{tool.stats.purchases} Purchases</span>
+                        {/* <img
+                          src={`https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${tool?.category}`}
+                          alt={tool?.name}
+                        /> */}
+
+                        <span className="text-xs text-lime-400">
+                          {/* {tool.stats.purchases} Purchases */}
+                        </span>
                       </div>
                     </div>
-                    <span className="text-lime-400 font-medium">{tool.price}</span>
+                    <span className="text-lime-400 font-medium">
+                      {`${tool.price} KAIA`}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -97,6 +118,5 @@ export function AllToolsModal({ isOpen, onClose, tools }: AllToolsModalProps) {
         </div>
       </div>
     </Modal>
-  )
+  );
 }
-
