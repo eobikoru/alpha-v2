@@ -29,14 +29,10 @@ import { useAccount, useReadContract, useReadContracts } from "wagmi";
 
 interface Appointment {
   id: string;
-  username: string;
-  time: string;
-  date: string;
-  avatar: string;
-  duration: string;
+  creator: `0x${string}`;
+  timestamp: number;
+  isBooked: boolean;
   status: "upcoming" | "completed" | "cancelled";
-  price: string;
-  notes?: string;
 }
 
 export interface Profile {
@@ -58,6 +54,14 @@ interface Tool {
 
 export default function CreatorDashboard() {
   const { address } = useAccount();
+
+  const { data: tools, isLoading }: any = useReadContract({
+    abi: CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    functionName: "getCreatorTools",
+    args: [address],
+  });
+
   const { data: profileData, isLoading: isProfileLoading } = useReadContracts({
     contracts: [
       {
@@ -81,15 +85,16 @@ export default function CreatorDashboard() {
     ],
   });
 
-  const [profileInfo, earningsInfo, consultationSlots] = profileData || [];
+  const [profileInfo, earningsInfo] = profileData || [];
 
   const { result: { name, bio, photoHash } = {} }: any = profileInfo || {};
 
   const { result: { totalEarnings, toolSales } = {} }: any = earningsInfo || {};
 
-  const Appointments = profileData?.[2]?.result ?? [];
+  const appointments: Appointment[] =
+    (profileData?.[2]?.result as Appointment[]) ?? [];
 
-  console.log(profileData, Appointments);
+  console.log(profileData, appointments);
 
   const [timeRange, setTimeRange] = useState("7d");
   const [isAddToolModalOpen, setIsAddToolModalOpen] = useState(false);
@@ -121,73 +126,78 @@ export default function CreatorDashboard() {
     },
   ];
 
-  const appointments: Appointment[] = [
-    {
-      id: "1",
-      username: "Kristian234",
-      time: "08:00",
-      date: "Today",
-      avatar: "/placeholder.svg?height=40&width=40",
-      duration: "30 minutes",
-      status: "upcoming",
-      price: "0.1 ETH",
-      notes: "Looking forward to discussing Web3 strategies.",
-    },
-    {
-      id: "2",
-      username: "Kristian234",
-      time: "10:00",
-      date: "Today",
-      avatar: "/placeholder.svg?height=40&width=40",
-      duration: "1 hour",
-      status: "upcoming",
-      price: "0.2 ETH",
-    },
-    {
-      id: "3",
-      username: "Kristian234",
-      time: "14:00",
-      date: "24 Jan",
-      avatar: "/placeholder.svg?height=40&width=40",
-      duration: "45 minutes",
-      status: "completed",
-      price: "0.15 ETH",
-    },
-    {
-      id: "4",
-      username: "Kristian234",
-      time: "16:00",
-      date: "24 Jan",
-      avatar: "/placeholder.svg?height=40&width=40",
-      duration: "30 minutes",
-      status: "cancelled",
-      price: "0.1 ETH",
-    },
-  ];
+  // const appointments: Appointment[] = [
+  //   {
+  //     id: "1",
+  //     username: "Kristian234",
+  //     time: "08:00",
+  //     date: "Today",
+  //     avatar: "/placeholder.svg?height=40&width=40",
+  //     duration: "30 minutes",
+  //     status: "upcoming",
+  //     price: "0.1 ETH",
+  //     notes: "Looking forward to discussing Web3 strategies.",
+  //   },
+  //   {
+  //     id: "2",
+  //     username: "Kristian234",
+  //     time: "10:00",
+  //     date: "Today",
+  //     avatar: "/placeholder.svg?height=40&width=40",
+  //     duration: "1 hour",
+  //     status: "upcoming",
+  //     price: "0.2 ETH",
+  //   },
+  //   {
+  //     id: "3",
+  //     username: "Kristian234",
+  //     time: "14:00",
+  //     date: "24 Jan",
+  //     avatar: "/placeholder.svg?height=40&width=40",
+  //     duration: "45 minutes",
+  //     status: "completed",
+  //     price: "0.15 ETH",
+  //   },
+  //   {
+  //     id: "4",
+  //     username: "Kristian234",
+  //     time: "16:00",
+  //     date: "24 Jan",
+  //     avatar: "/placeholder.svg?height=40&width=40",
+  //     duration: "30 minutes",
+  //     status: "cancelled",
+  //     price: "0.1 ETH",
+  //   },
+  // ];
 
-  const { data: tools, isLoading }: any = useReadContract({
-    abi: CONTRACT_ABI,
-    address: CONTRACT_ADDRESS,
-    functionName: "getCreatorTools",
-    args: [address],
-  });
-
+  function formatTimestamp(unixTimestamp: BigInt | number): string {
+    const timestampInMs = Number(unixTimestamp) * 1000;
+    const date = new Date(timestampInMs);
+    return date.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  }
   const handleAppointmentClick = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setIsAppointmentDetailsModalOpen(true);
     setIsAllAppointmentsModalOpen(false);
   };
 
-  const AppointmentCard = () => (
-    // {
-    // id,
-    // username,
-    // time,
-    // date,
-    // avatar,
-    // }: Appointment
+  const AppointmentCard = ({
+    id,
+    creator,
+    timestamp,
+    isBooked,
+  }: Appointment) => (
     <div className="flex items-center justify-between bg-zinc-900/50 rounded-lg p-4 backdrop-blur-sm">
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <Image
           src={avatar || "/placeholder.svg"}
           alt={username}
@@ -196,21 +206,21 @@ export default function CreatorDashboard() {
           className="rounded-full"
         />
         <span className="text-white">{username}</span>
-      </div>
+      </div> */}
       <div className="flex items-center gap-4">
         <div className="text-sm text-zinc-400">
           <Calendar className="inline-block w-4 h-4 mr-1" />
-          {date} {time}
+          {formatTimestamp(timestamp)}
         </div>
         <Button
           type="link"
           className="text-lime-400 hover:text-lime-500 p-0"
-          onClick={() => {
-            const appointment = appointments.find((a) => a.id === id);
-            if (appointment) {
-              handleAppointmentClick(appointment);
-            }
-          }}
+          // onClick={() => {
+          //   const appointment = appointments.find((a) => a.id === id);
+          //   if (appointment) {
+          //     handleAppointmentClick(appointment);
+          //   }
+          // }}
         >
           Details
         </Button>

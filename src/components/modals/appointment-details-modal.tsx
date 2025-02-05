@@ -1,29 +1,48 @@
-"use client"
+"use client";
 
-import { Modal } from "antd"
-import { ArrowLeft, Calendar, Clock, DollarSign, MessageSquare } from "lucide-react"
-import Image from "next/image"
+import { Modal } from "antd";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  DollarSign,
+  MessageSquare,
+} from "lucide-react";
+import Image from "next/image";
 export interface Appointment {
-    id: string
-    username: string
-    time: string
-    date: string
-    avatar: string
-    duration: string
-    status: "upcoming" | "completed" | "cancelled"
-    price: string
-    notes?: string
-  }
-  
-  
-
-interface AppointmentDetailsModalProps {
-  isOpen: boolean
-  onClose: () => void
-  appointment: Appointment
+  id: string;
+  creator: `0x${string}`;
+  timestamp: number;
+  isBooked: boolean;
+  status: "upcoming" | "completed" | "cancelled";
 }
 
-export function AppointmentDetailsModal({ isOpen, onClose, appointment }: AppointmentDetailsModalProps) {
+interface AppointmentDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  appointment: Appointment;
+}
+
+export function AppointmentDetailsModal({
+  isOpen,
+  onClose,
+  appointment,
+}: AppointmentDetailsModalProps) {
+  
+   function formatTimestamp(unixTimestamp: BigInt | number): string {
+     const timestampInMs = Number(unixTimestamp) * 1000;
+     const date = new Date(timestampInMs);
+     return date.toLocaleString("en-US", {
+       weekday: "short",
+       year: "numeric",
+       month: "short",
+       day: "2-digit",
+       hour: "2-digit",
+       minute: "2-digit",
+       second: "2-digit",
+       hour12: true,
+     });
+   }
   return (
     <Modal
       open={isOpen}
@@ -36,23 +55,30 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <h2 className="text-xl font-semibold text-white">Appointment Details</h2>
+          <h2 className="text-xl font-semibold text-white">
+            Appointment Details
+          </h2>
         </div>
 
         {/* User Info */}
         <div className="flex items-center gap-4 mb-8">
-          <Image
+          {/* <Image
             src={appointment.avatar || "/placeholder.svg"}
             alt={appointment.username}
             width={64}
             height={64}
             className="rounded-full"
-          />
+          /> */}
           <div>
-            <h3 className="text-lg font-medium text-white">{appointment.username}</h3>
+            <h3 className="text-lg font-medium text-white">
+              {appointment.creator}
+            </h3>
             <span
               className={`
               inline-block px-2 py-1 rounded-full text-xs
@@ -60,12 +86,13 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
                 appointment.status === "upcoming"
                   ? "bg-lime-400/20 text-lime-400"
                   : appointment.status === "completed"
-                    ? "bg-blue-400/20 text-blue-400"
-                    : "bg-red-400/20 text-red-400"
+                  ? "bg-blue-400/20 text-blue-400"
+                  : "bg-red-400/20 text-red-400"
               }
             `}
             >
-              {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+              {appointment.status.charAt(0).toUpperCase() +
+                appointment.status.slice(1)}
             </span>
           </div>
         </div>
@@ -74,22 +101,20 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-zinc-400">
             <Calendar className="w-5 h-5" />
-            <span>{appointment.date}</span>
+            <span>{formatTimestamp(appointment.timestamp)}</span>
           </div>
 
           <div className="flex items-center gap-3 text-zinc-400">
             <Clock className="w-5 h-5" />
-            <span>
-              {appointment.time} ({appointment.duration})
-            </span>
+            <span>{formatTimestamp(appointment.timestamp)}</span>
           </div>
 
           <div className="flex items-center gap-3 text-zinc-400">
             <DollarSign className="w-5 h-5" />
-            <span>{appointment.price}</span>
+            <span>{appointment.id}</span>
           </div>
 
-          {appointment.notes && (
+          {/* {appointment.notes && (
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-zinc-400">
                 <MessageSquare className="w-5 h-5" />
@@ -97,7 +122,7 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
               </div>
               <p className="text-zinc-400 pl-8">{appointment.notes}</p>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Actions */}
@@ -115,6 +140,5 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
         </div>
       </div>
     </Modal>
-  )
+  );
 }
-
