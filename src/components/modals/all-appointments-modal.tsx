@@ -115,16 +115,15 @@ export function AllAppointmentsModal({
               className="w-full flex items-center justify-between bg-zinc-800/50 rounded-lg p-4 hover:bg-zinc-800 transition-colors"
             >
               <div className="flex items-center gap-4">
-                <Image
-                  src={"/placeholder.svg"}
-                  alt={appointment.creator}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
                 <div className="text-left">
                   <h3 className="font-medium text-white">
-                    {appointment.creator}
+                    {appointment.creator &&
+                    appointment.creator.length > 3 * 2 + 2
+                      ? `${appointment.creator.slice(
+                          0,
+                          6
+                        )}.....${appointment.creator.slice(-5)}`
+                      : appointment.creator}
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <Calendar className="w-4 h-4" />
@@ -134,18 +133,10 @@ export function AllAppointmentsModal({
               </div>
               <span
                 className={`
-                px-2 py-1 rounded-full text-xs
-                ${
-                  appointment.status === "upcoming"
-                    ? "bg-lime-400/20 text-lime-400"
-                    : appointment.status === "completed"
-                    ? "bg-blue-400/20 text-blue-400"
-                    : "bg-red-400/20 text-red-400"
-                }
+                px-2 py-1 rounded-full text-xs bg-red-400/20 text-red-400
               `}
               >
-                {appointment?.status?.charAt(0).toUpperCase() +
-                  appointment?.status?.slice(1)}
+                Available
               </span>
             </button>
           ))}

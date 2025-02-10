@@ -197,30 +197,27 @@ export default function CreatorDashboard() {
     isBooked,
   }: Appointment) => (
     <div className="flex items-center justify-between bg-zinc-900/50 rounded-lg p-4 backdrop-blur-sm">
-      {/* <div className="flex items-center gap-3">
-        <Image
-          src={avatar || "/placeholder.svg"}
-          alt={username}
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-        <span className="text-white">{username}</span>
-      </div> */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-white">
+          {creator && creator.length > 3 * 2 + 2
+            ? `${creator.slice(0, 8)}......${creator.slice(-8)}`
+            : creator}
+        </span>
         <div className="text-sm text-zinc-400">
           <Calendar className="inline-block w-4 h-4 mr-1" />
           {formatTimestamp(timestamp)}
         </div>
+      </div>
+      <div className="flex items-center gap-4">
         <Button
           type="link"
           className="text-lime-400 hover:text-lime-500 p-0"
-          // onClick={() => {
-          //   const appointment = appointments.find((a) => a.id === id);
-          //   if (appointment) {
-          //     handleAppointmentClick(appointment);
-          //   }
-          // }}
+          onClick={() => {
+            const appointment = appointments.find((a) => a.id === id);
+            if (appointment) {
+              handleAppointmentClick(appointment);
+            }
+          }}
         >
           Details
         </Button>
@@ -417,7 +414,11 @@ export default function CreatorDashboard() {
                     Upcoming Appointments
                   </h2>
                   <span className="text-xs bg-zinc-800/50 backdrop-blur-sm px-2 py-1 rounded-full text-lime-400">
-                    15
+                    {
+                      appointments.filter(
+                        (appointment: any) => appointment.id !== undefined
+                      ).length
+                    }
                   </span>
                 </div>
                 <Button
@@ -430,7 +431,7 @@ export default function CreatorDashboard() {
               </div>
               <div className="space-y-2">
                 {appointments
-                  .filter((a) => a.status === "upcoming")
+                  .filter((a) => a.isBooked === false)
                   .slice(0, 4)
                   .map((appointment) => (
                     <AppointmentCard key={appointment.id} {...appointment} />

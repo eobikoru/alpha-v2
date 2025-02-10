@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
@@ -95,8 +95,13 @@ export function SetAvailabilityModal({
         console.error(error);
       }
     }
-    onClose();
   };
+
+  useEffect(() => {
+    if (isSuccessHash) {
+      onClose();
+    }
+  });
 
   return (
     <Modal

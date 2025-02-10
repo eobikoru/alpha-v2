@@ -29,20 +29,20 @@ export function AppointmentDetailsModal({
   appointment,
 }: AppointmentDetailsModalProps) {
   
-   function formatTimestamp(unixTimestamp: BigInt | number): string {
-     const timestampInMs = Number(unixTimestamp) * 1000;
-     const date = new Date(timestampInMs);
-     return date.toLocaleString("en-US", {
-       weekday: "short",
-       year: "numeric",
-       month: "short",
-       day: "2-digit",
-       hour: "2-digit",
-       minute: "2-digit",
-       second: "2-digit",
-       hour12: true,
-     });
-   }
+  function formatTimestamp(unixTimestamp: BigInt | number): string {
+    const timestampInMs = Number(unixTimestamp) * 1000;
+    const date = new Date(timestampInMs);
+    return date.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  }
   return (
     <Modal
       open={isOpen}
@@ -68,31 +68,22 @@ export function AppointmentDetailsModal({
 
         {/* User Info */}
         <div className="flex items-center gap-4 mb-8">
-          {/* <Image
-            src={appointment.avatar || "/placeholder.svg"}
-            alt={appointment.username}
-            width={64}
-            height={64}
-            className="rounded-full"
-          /> */}
           <div>
             <h3 className="text-lg font-medium text-white">
-              {appointment.creator}
+              {appointment.creator && appointment.creator.length > 3 * 2 + 2
+                ? `${appointment.creator.slice(
+                    0,
+                    3 + 2
+                  )}...${appointment.creator.slice(-5)}`
+                : appointment.creator}
             </h3>
             <span
               className={`
               inline-block px-2 py-1 rounded-full text-xs
-              ${
-                appointment.status === "upcoming"
-                  ? "bg-lime-400/20 text-lime-400"
-                  : appointment.status === "completed"
-                  ? "bg-blue-400/20 text-blue-400"
-                  : "bg-red-400/20 text-red-400"
-              }
+              bg-red-400/20 text-red-400
             `}
             >
-              {appointment.status.charAt(0).toUpperCase() +
-                appointment.status.slice(1)}
+              Available
             </span>
           </div>
         </div>
@@ -103,31 +94,28 @@ export function AppointmentDetailsModal({
             <Calendar className="w-5 h-5" />
             <span>{formatTimestamp(appointment.timestamp)}</span>
           </div>
-
           <div className="flex items-center gap-3 text-zinc-400">
             <Clock className="w-5 h-5" />
             <span>{formatTimestamp(appointment.timestamp)}</span>
           </div>
-
-          <div className="flex items-center gap-3 text-zinc-400">
+          {/* <div className="flex items-center gap-3 text-zinc-400">
             <DollarSign className="w-5 h-5" />
             <span>{appointment.id}</span>
-          </div>
-
-          {/* {appointment.notes && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-3 text-zinc-400">
-                <MessageSquare className="w-5 h-5" />
-                <span className="font-medium text-white">Notes</span>
-              </div>
-              <p className="text-zinc-400 pl-8">{appointment.notes}</p>
+          </div> */}
+          (
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 text-zinc-400">
+              <MessageSquare className="w-5 h-5" />
+              <span className="font-medium text-white">Notes</span>
             </div>
-          )} */}
+            <p className="text-zinc-400 pl-8">Please Join the call on time</p>
+          </div>
+          )
         </div>
 
         {/* Actions */}
         <div className="flex gap-3 mt-8">
-          {appointment.status === "upcoming" && (
+          {appointment.isBooked === false && (
             <>
               <button className="flex-1 px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">
                 Cancel Appointment
