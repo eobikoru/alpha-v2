@@ -10,11 +10,8 @@ interface SuccessModalProps {
 }
 
 export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
-  const router = useRouter();
-
   const handleGoToDashboard = () => {
-    onClose(); // Close the success modal
-    // router.push("/dashboard/creator"); // Navigate to creator dashboard
+    onClose();
   };
 
   return (

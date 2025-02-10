@@ -220,7 +220,27 @@ export default function ProfilePage() {
                   <Pencil size={20} />
                   Edit profile
                 </button>
-                <button className="flex items-center gap-2 px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-colors">
+
+                <button
+                  onClick={() => {
+                    const profileUrl = window.location.href; // Get the current profile URL
+
+                    if (navigator.share) {
+                      // Use Web Share API if available (for mobile & some browsers)
+                      navigator.share({
+                        title: "Check out this profile!",
+                        url: profileUrl,
+                      });
+                    } else {
+                      // Copy to clipboard for manual sharing
+                      navigator.clipboard
+                        .writeText(profileUrl)
+                        .then(() => alert("Profile link copied to clipboard!"))
+                        .catch(() => alert("Failed to copy profile link."));
+                    }
+                  }}
+                  className="flex items-center gap-2 px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-colors"
+                >
                   <Share2 size={20} />
                   Share profile
                 </button>

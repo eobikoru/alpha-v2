@@ -11,7 +11,9 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useDisconnect } from "wagmi";
 
 // Define the type for navigation links
 interface LinkItem {
@@ -32,6 +34,16 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
+
+  const { disconnect, isSuccess } = useDisconnect();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("it worked", isSuccess);
+      router.push("/");
+    }
+  }, [isSuccess, router]);
 
   return (
     <div className="flex h-screen bg-black">
@@ -87,7 +99,10 @@ export default function DashboardLayout({
               <CustomerServiceOutlined className="w-5 h-5" />
               <span className="text-base">Support</span>
             </Link>
-            <button className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 w-full">
+            <button
+              onClick={() => disconnect()}
+              className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 w-full"
+            >
               <LogoutOutlined className="w-5 h-5" />
               <span className="text-base">Logout</span>
             </button>
