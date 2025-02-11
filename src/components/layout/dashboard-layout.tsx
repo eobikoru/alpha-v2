@@ -1,65 +1,90 @@
-"use client";
+"use client"
 
-import {
-  HomeOutlined,
-  DollarCircleOutlined,
-  UserOutlined,
-  BellOutlined,
-  CustomerServiceOutlined,
-  LogoutOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useDisconnect } from "wagmi";
+import { UserOutlined, BellOutlined, CustomerServiceOutlined, LogoutOutlined, MenuOutlined } from "@ant-design/icons"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useDisconnect } from "wagmi"
+import type React from "react"
+import { useAccount, useReadContract } from "wagmi"
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant"
+import { message } from "antd"
 
-// Define the type for navigation links
 interface LinkItem {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
+  href: string
+  label: string
+  icon: React.ReactNode
 }
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
-  links: LinkItem[];
+  children: React.ReactNode
+  links: LinkItem[]
 }
 
-export default function DashboardLayout({
-  children,
-  links,
-}: DashboardLayoutProps) {
-  const pathname = usePathname();
+export interface Profile {
+  name: string
+  bio: string
+  githubHandle: string
+  twitterHandle: string
+  photoHash: string
+}
 
-  const isActive = (path: string) => pathname === path;
+export default function DashboardLayout({ children, links }: DashboardLayoutProps) {
+  const pathname = usePathname()
+  const { address } = useAccount()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const { disconnect, isSuccess } = useDisconnect();
-  const router = useRouter();
+  const { data: profileData, isLoading: isProfileLoading } = useReadContract({
+    abi: CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    functionName: "getCreatorProfile",
+    args: [address],
+  }) as { data: Profile | undefined; isLoading: boolean }
+
+  const isActive = (path: string) => pathname === path
+  const [messageApi, contextHolder] = message.useMessage()
+
+  const { disconnect, isSuccess } = useDisconnect()
+  const router = useRouter()
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("it worked", isSuccess);
-      router.push("/");
+      console.log("it worked", isSuccess)
+      router.push("/")
     }
-  }, [isSuccess, router]);
+  }, [isSuccess, router])
+
+  const handleSupport = () => {
+    messageApi.open({
+      type: "success",
+      content: "Coming soon .......",
+    })
+  }
+
+  const handleNotification = () => {
+    messageApi.open({
+      type: "success",
+      content: "Coming soon .......",
+    })
+  }
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   return (
     <div className="flex h-screen bg-black">
+      {contextHolder}
       {/* Sidebar */}
-      <aside className="w-64 bg-zinc-900 border-r border-zinc-800">
+      <aside
+        className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 left-0 z-50 w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-auto`}
+      >
         <div className="p-4">
-          <Image
-            src="/assets/images/alp.png"
-            alt="Alpha Logo"
-            width={100}
-            height={40}
-            className="w-24"
-          />
+          <Image src="/assets/images/alp.png" alt="Alpha Logo" width={100} height={40} className="w-24" />
         </div>
 
-        <nav className="mt-8">
+        <nav className="flex-1 overflow-y-auto">
           <div className="px-4 space-y-2">
             {links?.length > 0 ? (
               links?.map(({ href, icon, label }) => (
@@ -67,15 +92,13 @@ export default function DashboardLayout({
                   key={href}
                   href={href}
                   className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                    isActive(href)
-                      ? "bg-zinc-800 text-white"
-                      : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                    isActive(href) ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white hover:bg-zinc-800"
                   }`}
+                  onClick={() => setIsSidebarOpen(false)}
                 >
                   <span className="flex items-center gap-3">
                     {icon}
-                    <span className="text-base">{label}</span>{" "}
-                    {/* Ensuring label is visible */}
+                    <span className="text-base">{label}</span>
                   </span>
                 </Link>
               ))
@@ -83,11 +106,17 @@ export default function DashboardLayout({
               <p className="text-zinc-500 text-center">No links available</p>
             )}
           </div>
+        </nav>
 
-          <div className="mt-auto pt-8 border-t border-zinc-800 px-4 space-y-2">
+        <div className="mt-auto pt-4 px-4 space-y-2">
+          <div className="mt-auto pt-8 border-t border-zinc-800 space-y-2">
             <Link
               href="#"
               className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
+              onClick={() => {
+                handleNotification()
+                setIsSidebarOpen(false)
+              }}
             >
               <BellOutlined className="w-5 h-5" />
               <span className="text-base">Notifications</span>
@@ -95,52 +124,68 @@ export default function DashboardLayout({
             <Link
               href="#"
               className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
+              onClick={() => {
+                handleSupport()
+                setIsSidebarOpen(false)
+              }}
             >
               <CustomerServiceOutlined className="w-5 h-5" />
               <span className="text-base">Support</span>
             </Link>
             <button
-              onClick={() => disconnect()}
+              onClick={() => {
+                disconnect()
+                setIsSidebarOpen(false)
+              }}
               className="flex items-center gap-3 px-4 py-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 w-full"
             >
               <LogoutOutlined className="w-5 h-5" />
               <span className="text-base">Logout</span>
             </button>
           </div>
-        </nav>
+        </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Navbar */}
         <header className="h-16 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-6">
-          <div className="flex-1 max-w-xl">
-            <div className="relative">
-              {/* <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" /> */}
-              {/* <input
-                type="text"
-                placeholder="Search creators, categories or tools"
-                className="w-full bg-zinc-800 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-300"
-              /> */}
-            </div>
-          </div>
+          <button className="md:hidden text-white" onClick={toggleSidebar}>
+            <MenuOutlined className="text-2xl" />
+          </button>
+          <div className="flex-1 max-w-xl">{/* Search input removed as per your comment */}</div>
           <div className="flex items-center gap-4">
             <div className="bg-zinc-800 px-4 py-1.5 rounded-lg text-xs font-mono text-zinc-400">
-              0x7fCEB6e63D60C7CFCd6dE4eD94e1BE098A95E9e73
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected"}
             </div>
-            <Image
-              src="/placeholder.svg?height=32&width=32"
-              alt="Profile"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            {profileData?.photoHash ? (
+              <Image
+                src={`https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${profileData?.photoHash}`}
+                alt="Profile"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center">
+                <UserOutlined className="text-zinc-400" />
+              </div>
+            )}
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-6">
+          {isProfileLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-lime-300"></div>
+            </div>
+          ) : (
+            children
+          )}
+        </main>
       </div>
     </div>
-  );
+  )
 }
+

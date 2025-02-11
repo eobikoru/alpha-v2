@@ -1,5 +1,5 @@
 import React from "react";
-
+import Link from "next/link"
 const HeroSection = () => {
   return (
     <div
@@ -17,9 +17,13 @@ const HeroSection = () => {
         <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
           Share tools, offer consultations, and build your personal brand with ease
         </p>
-        <button className="mt-8 px-11 py-4 text-lg bg-[#d4ff8e] hover:bg-[#c1eb7b] text-black rounded-full transition-colors">
+        <Link 
+        href="#learn" passHref
+        >
+        <button  className="mt-8 px-11 py-4 text-lg bg-[#d4ff8e] hover:bg-[#c1eb7b] text-black rounded-full transition-colors">
           Learn More
         </button>
+        </Link>
       </main>
     </div>
   );

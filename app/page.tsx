@@ -4,7 +4,8 @@ import { Navbar } from "@/src/components/navbar";
 import FAQSection from "@/src/features/landing/faq";
 import FeatureHighlights from "@/src/features/landing/featuresHighlight";
 import HowItWorks from "@/src/features/landing/howitworks";
-
+import "@ant-design/compatible";
+import "antd/dist/reset.css"; 
 export default function Home() {
   return (
    <div>

@@ -5,7 +5,7 @@ import { BulbOutlined, ShoppingOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
-
+import Link from "next/link"
 const WelcomeBack = () => {
   const { address } = useAccount();
   const router = useRouter();
@@ -45,12 +45,11 @@ const WelcomeBack = () => {
             knowledge.
           </p>
 
-          <button
-            onClick={() => router.push("/dashboard/creator")}
-            className="w-full bg-lime-300 text-black font-medium py-4 rounded-full mt-12 hover:bg-lime-400 transition-colors"
-          >
+          <Link href="/dashboard/creator" passHref>
+          <p className="block w-full bg-lime-300 cursor-pointer text-black font-medium py-4 rounded-full mt-12 hover:bg-lime-400 transition-colors text-center">
             Go to dashboard
-          </button>
+          </p>
+        </Link>
         </div>
       </div>
     </div>
