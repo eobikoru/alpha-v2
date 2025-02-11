@@ -16,7 +16,7 @@ interface BookSessionModalProps {
     title: string
     avatar: string
   },
-  router: Router // Add router prop
+  router?: Router // Add router prop
 }
 
 type ModalView = "calendar" | "time-slots" | "confirmation" | "payment" | "success"

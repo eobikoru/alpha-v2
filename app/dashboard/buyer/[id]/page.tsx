@@ -8,13 +8,13 @@ import { HomeOutlined, DollarCircleOutlined, UserOutlined } from "@ant-design/ic
 import { BuyModal } from "@/src/components/modals/buy-modal"
 import { BookSessionModal } from "@/src/components/modals/book-section-modal"
 
-interface CreatorProfileProps {
-  params: {
-    id: string
-  }
-}
+// interface CreatorProfileProps {
+//   params: {
+//     id: string
+//   }
+// }
 
-export default function CreatorProfile({ params }: CreatorProfileProps) {
+export default function CreatorProfile( ) {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
     const creator = {

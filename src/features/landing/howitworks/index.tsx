@@ -2,7 +2,7 @@ import { BulbOutlined, ShoppingOutlined } from "@ant-design/icons"
 
 export default function HowItWorks() {
   return (
-    <section className="bg-black text-white py-20 px-4">
+    <section id="learn" className="bg-black text-white py-20 px-4">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-medium text-center mb-16">How it works</h2>
 
