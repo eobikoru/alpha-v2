@@ -21,7 +21,7 @@ import {
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant";
 import { ClipLoader } from "react-spinners";
 import WelcomeBack from "../welcomeBack/index";
-
+import NProgress from "nprogress";
 export default function OnboardingFlow() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -96,7 +96,8 @@ export default function OnboardingFlow() {
       setStep(2);
     } else if (selectedRole === "buyer") {
       // Route to buyer dashboard
-      router.push("/dashboard/buyer");
+      NProgress.start(); // Start loading bar
+  router.push("/dashboard/buyer").then(() => NProgress.done()); 
     }
   };
 
