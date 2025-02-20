@@ -9,32 +9,35 @@ import { BuyModal } from "@/src/components/modals/buy-modal"
 import { BookSessionModal } from "@/src/components/modals/book-section-modal"
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant"
 import { useReadContract, useContractRead } from "wagmi"
-import { use } from "react"
+import { useParams } from "next/navigation"
+
 interface CreatorProfileProps {
   params: {
     id: string
   }
 }
 
-export default function CreatorProfile({ params }: CreatorProfileProps) {
-  const resolvedParams = use(params)
-  console.log(resolvedParams, "resolvedParams")
+export default function CreatorProfile() {
+  const param = useParams()
+  const id = param.id
+  const [buyModalOpen, setBuyModalOpen] = useState(false)
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
+  const [selectedTool, setSelectedTool] = useState<any>(null)
+
   const { data: creatorData, isLoading } = useReadContract({
     abi: CONTRACT_ABI,
     address: CONTRACT_ADDRESS,
     functionName: "getCreatorProfile",
-    args: [resolvedParams.id],
+    args: [id],
   }) as { data: any; isLoading: boolean }
 
-  const [buyModalOpen, setBuyModalOpen] = useState(false)
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
   const { data: creatorTools, isLoading: creatorToolsLoading } = useContractRead({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: "getToolsByCreator",
-    args: [resolvedParams.id],
-  })
-  console.log(creatorTools, "creatorTools")
+    args: [id],
+  }) as { data: any[] | undefined; isLoading: boolean }
+
   const creator = creatorData
     ? {
         name: creatorData.name,
@@ -64,10 +67,14 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
     },
   ]
 
+  const handleBuyClick = (tool: any) => {
+    setSelectedTool(tool)
+    setBuyModalOpen(true)
+  }
+
   if (isLoading) {
     return (
       <DashboardLayout links={navigationLinks}>
-        {" "}
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-lime-400"></div>
         </div>
@@ -106,14 +113,13 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
               </button>
             </div>
 
-            {/* Tabs */}
             <Tabs
               defaultActiveKey="overview"
               className="creator-tabs mt-6"
               items={[
                 {
                   key: "overview",
-                  label: "Overview",
+                  label: <span className="text-white">Overview</span>,
                   children: (
                     <div className="text-zinc-300 my-8">
                       <p className="mb-4">{creator.bio}</p>
@@ -138,8 +144,25 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
                 },
                 {
                   key: "reviews",
-                  label: "Reviews",
-                  children: <div className="text-zinc-400 text-center mt-10">No reviews yet</div>,
+                  label: <span className="text-white">Reviews</span>,
+                  children: (
+                    <div className="bg-zinc-900/50 my-10 rounded-lg p-8 border border-zinc-800 text-center">
+                      <svg
+                        className="mx-auto h-12 w-12 text-zinc-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                        />
+                      </svg>
+                      <h3 className="mt-2 text-sm font-medium text-zinc-300">No Reviews yet</h3>
+                    </div>
+                  ),
                 },
               ]}
             />
@@ -147,9 +170,9 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
             {/* Tools Section */}
             <div className="mt-8">
               <h3 className="text-xl font-semibold text-white mb-6">Tools</h3>
-              {creatorTools && creatorTools.length > 0 ? (
+              {Array.isArray(creatorTools) && creatorTools.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {creatorTools.map((tool: any, index: number) => (
+                  {creatorTools.map((tool, index) => (
                     <div
                       key={index}
                       className="bg-zinc-900/50 rounded-lg p-4 border border-zinc-800 hover:border-lime-300/50 transition-colors"
@@ -166,14 +189,10 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
                           </div>
                           <p className="text-sm text-zinc-400 mb-3">{tool.description}</p>
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm text-zinc-500">
-                              <span>1 PDF</span>
-                              <span>3 Videos</span>
-                            </div>
                             <span className="text-lime-400">{tool.price.toString()} KYA</span>
                           </div>
                           <button
-                            onClick={() => setBuyModalOpen(true)}
+                            onClick={() => handleBuyClick(tool)}
                             className="w-full mt-4 bg-lime-300 hover:bg-lime-400 text-black font-medium py-2 rounded"
                           >
                             Buy
@@ -201,32 +220,20 @@ export default function CreatorProfile({ params }: CreatorProfileProps) {
                   <h3 className="mt-2 text-sm font-medium text-zinc-300">No tools</h3>
                   <p className="mt-1 text-sm text-zinc-500">This creator hasn't added any tools yet.</p>
                 </div>
+
+                // stop
               )}
             </div>
           </div>
         </div>
-        <BuyModal isOpen={buyModalOpen} onClose={() => setBuyModalOpen(false)} amount="300" />
+        <BuyModal
+          isOpen={buyModalOpen}
+          onClose={() => setBuyModalOpen(false)}
+          amount={selectedTool?.price ?? "0"}
+          creatorTools={selectedTool}
+        />
         <BookSessionModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} creator={creator} />
       </DashboardLayout>
-      <style jsx global>{`
-        .creator-tabs .ant-tabs-nav::before {
-          border-bottom: 1px solid rgb(63 63 70);
-        }
-        .creator-tabs .ant-tabs-tab {
-          color: rgb(161 161 170);
-          padding: 12px 0;
-          margin: 0 16px 0 0;
-        }
-        .creator-tabs .ant-tabs-tab:hover {
-          color: white;
-        }
-        .creator-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-          color: rgb(163 230 53);
-        }
-        .creator-tabs .ant-tabs-ink-bar {
-          background: rgb(163 230 53);
-        }
-      `}</style>
     </>
   )
 }

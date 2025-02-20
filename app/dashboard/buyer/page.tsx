@@ -89,11 +89,11 @@ export default function Dashboard() {
   })
 
   const { data: creatorsData, isLoading: creatorsLoading } = useContractReads({
-    contracts: Array.isArray(creatorAddresses) ? creatorAddresses.map((address: string) => ({
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI as Abi,
+    contracts: Array.isArray(creatorAddresses) ? creatorAddresses.map((address: any) => ({
+      address: CONTRACT_ADDRESS as any,
+      abi: CONTRACT_ABI as any ,
       functionName: "getCreatorProfile",
-      args: [address],
+      args: [address as any],
     })) : [],
   })
 

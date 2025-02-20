@@ -91,15 +91,16 @@ export default function OnboardingFlow() {
     setIsButtonDisabled(isFormIncomplete);
   }, [formData]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedRole === "creator") {
       setStep(2);
     } else if (selectedRole === "buyer") {
-      // Route to buyer dashboard
       NProgress.start(); // Start loading bar
-  router.push("/dashboard/buyer").then(() => NProgress.done()); 
+      await router.push("/dashboard/buyer"); // Wait for navigation
+      NProgress.done(); // Stop loading bar after navigation completes
     }
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
