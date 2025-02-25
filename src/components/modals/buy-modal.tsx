@@ -84,7 +84,7 @@ export function BuyModal({ isOpen, onClose, amount, creatorTools }: BuyModalProp
         {!isPaymentSuccess ? (
           <div className="text-center">
             <h3 className="text-zinc-400 mb-2">Total amount</h3>
-            <p className="text-3xl font-semibold text-white mb-6">{amount} KYA</p>
+            <p className="text-3xl font-semibold text-white mb-6">{amount} KAIA</p>
 
             <Button
               className="w-full h-12 bg-[#D1FF7C] hover:bg-[#c1ef6c] text-black font-medium text-base"
