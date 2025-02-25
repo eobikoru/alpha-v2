@@ -189,7 +189,7 @@ export default function CreatorProfile() {
                           </div>
                           <p className="text-sm text-zinc-400 mb-3">{tool.description}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-lime-400">{tool.price.toString()} KYA</span>
+                            <span className="text-lime-400">{tool.price.toString()} KAIA</span>
                           </div>
                           <button
                             onClick={() => handleBuyClick(tool)}
