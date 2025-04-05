@@ -13,6 +13,7 @@ import { AllAppointmentsModal } from "@/src/components/modals/all-appointments-m
 import { AllToolsModal } from "@/src/components/modals/all-tools-modal"
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/src/constant/constant"
 import { useAccount, useReadContract, useReadContracts } from "wagmi"
+import PerformanceChart from "@/src/components/charts/performance-chart"
 
 interface Appointment {
   id: string
@@ -322,6 +323,13 @@ export default function CreatorDashboard() {
               </Button>
             </div>
           </div>
+           {/* stats chat */}
+           <div className="mb-8">
+            <PerformanceChart/>           
+            </div>
+
+
+
 
           {/* Tabs Section */}
           <Tabs
